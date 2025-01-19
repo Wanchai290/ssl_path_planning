@@ -1,6 +1,7 @@
 import typing
 import numpy as np
 from graph import Node, TreeGraph, CostTreeGraph
+from obstacle import obstacle_free
 
 # global parameters
 NU_MIN_RADIUS = 0.05  # as defined by RRT* paper
@@ -38,10 +39,6 @@ def steer(n_nearest: Node, x_rand: np.ndarray):
 
     # TODO: use NU value as defined by paper
     return n_nearest_xy + ((v_to_xrand / np.linalg.norm(v_to_xrand)) * STEER_VECTOR_STEP_MUL)
-
-
-def obstacle_free(start: np.ndarray, end: np.ndarray):
-    return True
 
 
 def rrt(start: np.ndarray, pmin, pmax, steps: int) -> (TreeGraph, bool):
