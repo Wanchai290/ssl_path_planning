@@ -13,8 +13,7 @@ if __name__ == '__main__':
 
     # load obstacles
     add_obstacles([
-        LineObstacle(np.array((1.0, 3.4)),
-                     np.array((4.2, 1.0)))
+        LineObstacle((1.0, 3.4), (4.2, 1.0)),
     ])
 
     g, target_attained = rrt_star(start, target, pmin, pmax, num_iters)

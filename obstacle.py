@@ -1,4 +1,5 @@
 import abc
+import typing
 from collections import namedtuple
 
 import numpy as np
@@ -41,9 +42,10 @@ def line_intersect(l_a: (np.ndarray, np.ndarray), l_b: (np.ndarray, np.ndarray))
 
 class LineObstacle(Obstacle):
 
-    def __init__(self, start: np.ndarray, end: np.ndarray):
-        self._start = start
-        self._end = end
+    def __init__(self, start: typing.Union[np.ndarray, typing.Tuple[float, float]],
+                 end: typing.Union[np.ndarray, typing.Tuple[float, float]]):
+        self._start = start if start is np.ndarray else np.array(start)
+        self._end = end if end is np.ndarray else np.array(end)
 
     def obstacle_free(self, l_start: np.ndarray, l_end: np.ndarray) -> bool:
         return line_intersect((self._start, self._end), (l_start, l_end))
@@ -67,7 +69,6 @@ def add_obstacles(li: [Obstacle]):
 def plot_obstacles():
     for obs in __g_obstacles:
         obs.plot()
-
 
 
 def obstacle_free(start: np.ndarray, end: np.ndarray):
