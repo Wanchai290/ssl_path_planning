@@ -3,7 +3,9 @@ import numpy as np
 from graph import Node, TreeGraph, CostTreeGraph
 
 # global parameters
-NU_MIN_RADIUS = 0.05
+NU_MIN_RADIUS = 0.05  # as defined by RRT* paper
+DELTA_TARGET_REACHED = 0.1  # a min dist to consider whether target is attained or not
+STEER_VECTOR_STEP_MUL = 0.1  # between 0 and 1
 
 
 def random_sample(a, b) -> (float, float):
@@ -35,15 +37,18 @@ def steer(n_nearest: Node, x_rand: np.ndarray):
     v_to_xrand = x_rand - n_nearest_xy
 
     # TODO: use NU value as defined by paper
-    step_mul = 0.8  # between 0 and 1
-    return n_nearest_xy + ((v_to_xrand / np.linalg.norm(v_to_xrand)) * step_mul)
+    return n_nearest_xy + ((v_to_xrand / np.linalg.norm(v_to_xrand)) * STEER_VECTOR_STEP_MUL)
 
 
 def obstacle_free(start: np.ndarray, end: np.ndarray):
     return True
 
 
-def rrt(start: (float, float), pmin, pmax, steps: int) -> TreeGraph:
+def rrt(start: np.ndarray, pmin, pmax, steps: int) -> (TreeGraph, bool):
+    """
+    RRT implementation as close to the paper as possible.
+    Does not check wheter target is attained
+    """
     g = TreeGraph()
     g.add_node(Node(*start), None)
 
@@ -54,26 +59,31 @@ def rrt(start: (float, float), pmin, pmax, steps: int) -> TreeGraph:
         if obstacle_free(n_nearest.xy(), x_new):
             g.add_node(Node(*x_new), n_nearest)
 
-    return g
+    return g, False
 
 
 def rrt_star(start: np.ndarray,
              target: np.ndarray,
              pmin, pmax,
-             steps: int):
+             steps: int) -> (CostTreeGraph, bool):
     """
     RRT* (or Optimal RRT) implementation similar to the algorithm
     presented in the paper.
 
     There are subtle differences in this implementation.
 
-    Functional: L8 (line 8) was moved below L12, because of the way
+    - Functional: L8 (line 8) was moved below L12, because of the way
     the graph is implemented, so we ensure every node but the root node
     has a valid parent when updating the graph.
 
-    Computation-wise: for the minimum-cost path computing,
+    - Computation-wise: for the minimum-cost path computing,
     observe that c_min in L12 takes a values that was computed at L11.
     We simply store the calculated cost to avoid computing it twice.
+
+    - Attaining the target: if an added node is considered close to the target
+    by a certain delta (specified in function `near_target(Node)`), the algorithm
+    stops and returns True, with the graph. If the target could not be reached,
+    this value will be False instead.
 
     Reference: Sampling-based Algorithms for Optimal Motion Planning
     https://arxiv.org/pdf/1105.1186https://arxiv.org/pdf/1105.1186
@@ -94,6 +104,9 @@ def rrt_star(start: np.ndarray,
 
     def target_cost(p: np.ndarray):
         return np.linalg.norm(target - p)
+
+    def near_target(node: Node):
+        return np.linalg.norm(target - node.xy()) < 0.1
 
     def line_cost(start: np.ndarray, end: np.ndarray):
         return np.linalg.norm(end - start)  # + target_cost(start)
@@ -131,4 +144,8 @@ def rrt_star(start: np.ndarray,
                         and g.get_cost(node_xnew) + line_cost(n_near.xy(), x_new) < g.get_cost(n_near):
                     g.set_parent(n_near, node_xnew)
 
-    return g
+            # stop if target attained
+            if near_target(node_xnew):
+                return g, True
+
+    return g, False

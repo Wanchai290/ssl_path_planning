@@ -4,15 +4,16 @@ from algs.rrt import rrt, rrt_star
 
 
 if __name__ == '__main__':
-    pmin, pmax, step = (-10, 10, 0.1)
+    pmin, pmax = (-5, 5)
 
-    start = np.array((-7.5, -6.3))
-    target = np.array((8.1, 5.2))
-    num_iters = 500
+    start = np.array((-2.1, 3.2))
+    target = np.array((-0.4, 1.1))
+    num_iters = 1000
 
-    g = rrt_star(start, target, pmin, pmax, num_iters)
+    g, target_attained = rrt_star(start, target, pmin, pmax, num_iters)
     g.plot()
 
+    plt.title(f"Target attained : {target_attained}")
     # plt.xlim([pmin, pmax])
     # plt.ylim([pmin, pmax])
     plt.scatter(*start, c="green")
