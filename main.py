@@ -26,6 +26,6 @@ if __name__ == '__main__':
     plt.title(f"Target attained : {target_attained}")
     # plt.xlim([pmin, pmax])
     # plt.ylim([pmin, pmax])
-    plt.scatter(*start, c="green")
-    plt.scatter(*target, c="red")
+    plt.scatter(*start, c="b", zorder=1)
+    plt.scatter(*target, c="red", zorder=1)
     plt.show()

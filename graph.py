@@ -63,7 +63,7 @@ class TreeGraph:
         for n in self.nodes():
             start_x, start_y = n.xy()
             end_x, end_y = self._g[n].xy() if self._g[n] is not None else n.xy()
-            plt.plot([start_x, end_x], [start_y, end_y], marker='+', color="gray")
+            plt.plot([start_x, end_x], [start_y, end_y], marker='+', color="gray", zorder=0)
 
 
 class CostTreeGraph(TreeGraph):
