@@ -3,10 +3,36 @@ import numpy as np
 from graph import Node, TreeGraph, CostTreeGraph
 from obstacle import obstacle_free
 
+"""
+References:
+[1] S.Karaman, E.Frazzoli, Sampling-based Algorithms for Optimal Motion Planning 
+https://arxiv.org/pdf/1105.1186
+
+[2] S.M. LaValle, Rapidly-Exploring Random Trees: A New Tool for Path Planning
+https://msl.cs.illinois.edu/~lavalle/papers/Lav98c.pdf
+"""
+
 # global parameters
-NU_MIN_RADIUS = 0.05  # as defined by RRT* paper
-DELTA_TARGET_REACHED = 0.1  # a min dist to consider whether target is attained or not
-STEER_VECTOR_STEP_MUL = 0.1  # between 0 and 1
+# don't change default values, assign them using
+# the function `set_parameters()`
+NU = 0.05
+"""As defined in reference [1] (see top of `rrt` module)"""
+
+DELTA_TARGET_REACHED = 0.3  # a min dist to consider whether target is attained or not
+"""Distance condition to meet to consider target has been attained from coordinates (x, y)"""
+
+STEP_NORM = 0.2
+"""Defines the step from nearest node to random sample.
+Modifying this must be of the same magnitude as DELTA_TARGET_REACHED (otherwise, target
+will never be found)"""
+
+
+def set_parameters(nu: float, d_target_reached: float, step_norm: float):
+    """Change global parameters. See documentation in the `rrt` module"""
+    global NU, DELTA_TARGET_REACHED, STEP_NORM
+    NU = nu
+    DELTA_TARGET_REACHED = d_target_reached
+    STEP_NORM = step_norm
 
 
 def random_sample(a, b) -> (float, float):
@@ -27,24 +53,37 @@ def nearest_node(g: TreeGraph, x_rand: np.ndarray) -> Node:
     return min_n
 
 
+def set_vec_norm(vec: np.ndarray, n: float):
+    """Returns a new vector of norm n"""
+    return n * vec / np.linalg.norm(vec)
+
+
 def steer(n_nearest: Node, x_rand: np.ndarray):
     """
+    Not based on the definition of the `Steer() function` from [1]
+    (see references at the top of the file). Instead,
+    we use a step towards the next node, similar to [2],
+    robots of the SSL are holonomic so this stepping should be valid
+    in this use-case.
+
     :param n_nearest: Node
     :param x_rand: (x, y) ndarray
     :return: new point p satisfying min(dist(p, n_nearest)) while
-    maintaining dist(x_rand, p) <= n  where n > 0
+    maintaining dist(x_rand, p) > n  where n > 0
     """
     n_nearest_xy = n_nearest.xy()
     v_to_xrand = x_rand - n_nearest_xy
+    v = set_vec_norm(v_to_xrand, STEP_NORM)
 
-    # TODO: use NU value as defined by paper
-    return n_nearest_xy + ((v_to_xrand / np.linalg.norm(v_to_xrand)) * STEER_VECTOR_STEP_MUL)
+    return n_nearest_xy + v
 
 
 def rrt(start: np.ndarray, pmin, pmax, steps: int) -> (TreeGraph, bool):
     """
     RRT implementation as close to the paper as possible.
-    Does not check wheter target is attained
+    Does not check wheter target is attained.
+
+    Reference: uses the definition of [1]
     """
     g = TreeGraph()
     g.add_node(Node(*start), None)
@@ -61,7 +100,7 @@ def rrt(start: np.ndarray, pmin, pmax, steps: int) -> (TreeGraph, bool):
 
 def rrt_star(start: np.ndarray,
              target: np.ndarray,
-             pmin, pmax,
+             pmin: float, pmax: float,
              steps: int) -> (CostTreeGraph, bool):
     """
     RRT* (or Optimal RRT) implementation similar to the algorithm
@@ -82,14 +121,13 @@ def rrt_star(start: np.ndarray,
     stops and returns True, with the graph. If the target could not be reached,
     this value will be False instead.
 
-    Reference: Sampling-based Algorithms for Optimal Motion Planning
-    https://arxiv.org/pdf/1105.1186https://arxiv.org/pdf/1105.1186
+    Reference: [1]
     """
 
     def r(num_nodes: int):
         """neighbour search radius"""
         # TODO: seems awfully low for num_nodes > 3000
-        return min(np.sqrt(np.log2(num_nodes) / num_nodes), NU_MIN_RADIUS)
+        return min(np.sqrt(np.log2(num_nodes) / num_nodes), NU)
 
     def near_nodes(g: TreeGraph, x_new: np.ndarray, r: float) -> typing.Set[Node]:
         """adds all neighbours in a circle of origin x_new and radius r"""
