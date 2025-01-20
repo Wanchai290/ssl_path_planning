@@ -141,7 +141,7 @@ def rrt_star(start: np.ndarray,
         return np.linalg.norm(target - p)
 
     def near_target(node: Node):
-        return np.linalg.norm(target - node.xy()) < 0.1
+        return np.linalg.norm(target - node.xy()) < DELTA_TARGET_REACHED
 
     def line_cost(start: np.ndarray, end: np.ndarray):
         return np.linalg.norm(end - start)  # + target_cost(start)
