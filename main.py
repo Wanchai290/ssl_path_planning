@@ -22,8 +22,9 @@ if __name__ == '__main__':
 
     g, target_attained = rrt.rrt_star(start, target, pmin, pmax, num_iters)
 
-    mp = min(g.nodes(), key=lambda n: np.linalg.norm(n.xy() - target))
-    print(f"Closest node : {mp}, d={np.linalg.norm(mp.xy() - target)}")
+    if not target_attained:
+        mp = min(g.nodes(), key=lambda n: np.linalg.norm(n.xy() - target))
+        print(f"Closest node : {mp}, d=%.3f" % np.linalg.norm(mp.xy() - target))
 
     # plot graph
     g.plot()

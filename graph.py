@@ -18,7 +18,7 @@ class Node:
         return np.array((self.x, self.y))
 
     def __repr__(self):
-        return "Node(" + str(self.x) + ", " + str(self.y) + ")"
+        return "Node({:.3f}, {:.3f})".format(self.x, self.y)
 
     def __eq__(self, other):
         return self.x == other.x \
