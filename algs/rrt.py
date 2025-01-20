@@ -18,7 +18,7 @@ https://msl.cs.illinois.edu/~lavalle/papers/Lav98c.pdf
 NU = 0.05
 """As defined in reference [1] (see top of `rrt` module)"""
 
-DELTA_TARGET_REACHED = 0.3  # a min dist to consider whether target is attained or not
+DELTA_TARGET_REACHED = 0.15
 """Distance condition to meet to consider target has been attained from coordinates (x, y)"""
 
 STEP_NORM = 0.2
