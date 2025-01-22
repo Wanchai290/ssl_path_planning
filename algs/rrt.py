@@ -175,9 +175,11 @@ def rrt_star(start: np.ndarray,
 
             # rewiring graph with the new node
             for n_near in N_near:
+                new_cost = g.get_cost(node_xnew) + line_cost(n_near.xy(), x_new)
                 if obstacle_free(n_near.xy(), x_new) \
-                        and g.get_cost(node_xnew) + line_cost(n_near.xy(), x_new) < g.get_cost(n_near):
+                        and new_cost < g.get_cost(n_near):
                     g.set_parent(n_near, node_xnew)
+                    g.set_cost(n_near, new_cost)
 
             # stop if target attained
             if near_target(node_xnew):
