@@ -18,16 +18,18 @@ https://msl.cs.illinois.edu/~lavalle/papers/Lav98c.pdf
 NU = 0.05
 """As defined in reference [1] (see top of `rrt` module)"""
 
-DELTA_TARGET_REACHED = 0.15
+DELTA_TARGET_REACHED = 0.2
 """Distance condition to meet to consider target has been attained from coordinates (x, y)"""
 
-STEP_NORM = 0.2
+STEP_NORM = 0.1
 """Defines the step from nearest node to random sample.
 Modifying this must be of the same magnitude as DELTA_TARGET_REACHED (otherwise, target
 will never be found)"""
 
 
-def set_parameters(nu: float, d_target_reached: float, step_norm: float):
+def set_parameters(nu: float = NU,
+                   d_target_reached: float = DELTA_TARGET_REACHED,
+                   step_norm: float = STEP_NORM):
     """Change global parameters. See documentation in the `rrt` module"""
     global NU, DELTA_TARGET_REACHED, STEP_NORM
     NU = nu
@@ -137,9 +139,6 @@ def rrt_star(start: np.ndarray,
                 ngh.add(n)
         return ngh
 
-    def target_cost(p: np.ndarray):
-        return np.linalg.norm(target - p)
-
     def near_target(node: Node):
         return np.linalg.norm(target - node.xy()) < DELTA_TARGET_REACHED
 
@@ -149,7 +148,7 @@ def rrt_star(start: np.ndarray,
     g = CostTreeGraph()
     n_start = Node(*start)
     g.add_node(n_start, None)
-    g.set_cost(n_start, target_cost(start))
+    g.set_cost(n_start, 0)
 
     for _ in range(steps):
         x_rand = random_sample(pmin, pmax)  # (x, y)
@@ -179,7 +178,6 @@ def rrt_star(start: np.ndarray,
                 if obstacle_free(n_near.xy(), x_new) \
                         and new_cost < g.get_cost(n_near):
                     g.set_parent(n_near, node_xnew)
-                    g.set_cost(n_near, new_cost)
 
             # stop if target attained
             if near_target(node_xnew):
