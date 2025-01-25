@@ -9,7 +9,7 @@ if __name__ == '__main__':
     # search parameters
     start = np.array(((pmax + pmin) / 2., (pmax + pmin) / 2.))
     target = np.array((-2.7, 3.5))
-    num_iters = 500
+    num_iters = 750
 
     # load obstacles
     add_obstacles([
@@ -18,7 +18,7 @@ if __name__ == '__main__':
     ])
 
     # optional
-    # rrt.set_parameters(0.1, 1, 0.5)
+    rrt.set_parameters(step_norm=0.25, d_target_reached=0.25)
 
     g, target_attained = rrt.rrt_star(start, target, pmin, pmax, num_iters)
 
