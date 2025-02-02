@@ -10,6 +10,14 @@ and then run from the repo's root directory using :
 py main.py
 ```
 
+## Implementation details
+In [1], the cost function is defined such that `Cost(p) = Parent(p) + c(Line(Parent(p), p))`.
+Here, cost of a node `p` is merely the current distance traveled up until attained `p`.
+
+The implementation of `CostTreeGraph#get_cost` does not perform this. Instead, the cost of a node
+`p` is directly set in the algorithms. This way, it is not required to recursively compute the
+cost of a node, thus allowing for O(1) access.
+
 ## References
 1. S.Karaman, E.Frazzoli, Sampling-based Algorithms for Optimal Motion Planning 
 https://arxiv.org/pdf/1105.1186

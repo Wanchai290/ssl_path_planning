@@ -74,11 +74,7 @@ class CostTreeGraph(TreeGraph):
 
     def get_cost(self, node: Node) -> float:
         super()._check_is_in_graph(node)
-        parent = self.get_parent(node)
-        if parent is None:
-            return self._cost[node]
-        else:
-            return self._cost[parent] + self._cost[node]
+        return self._cost[node]
 
     def set_cost(self, node: Node, cost: float):
         super()._check_is_in_graph(node)
