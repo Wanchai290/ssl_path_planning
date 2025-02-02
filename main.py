@@ -31,7 +31,12 @@ if __name__ == '__main__':
     g.plot()
     plot_obstacles()
 
-    plt.title(f"Target attained : {target_attained}")
+    title = f"Target attained : {target_attained}"
+    if target_attained:
+        node_target = g.get_closest_node(target)
+        title += ", path cost : %.3f" % g.get_cost(node_target)
+
+    plt.title(title)
     plt.xlim([pmin, pmax])
     plt.ylim([pmin, pmax])
     plt.gca().set_aspect('equal')

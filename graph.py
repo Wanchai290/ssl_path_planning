@@ -65,6 +65,10 @@ class TreeGraph:
             end_x, end_y = self._g[n].xy() if self._g[n] is not None else n.xy()
             plt.plot([start_x, end_x], [start_y, end_y], marker='+', markersize=2, color="gray", zorder=0, linewidth=1)
 
+    def get_closest_node(self, p: np.ndarray | tuple[float, float]) -> Node:
+        p = np.array(p)
+        return min(self.nodes(), key=lambda node: np.linalg.norm(p - node.xy()))
+
 
 class CostTreeGraph(TreeGraph):
 
