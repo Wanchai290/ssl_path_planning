@@ -26,8 +26,8 @@ class RdSquareSample:
         self._best_cost = np.inf
         self._center = midpoint(x_start, target)
 
-        xlength = target[0] - x_start[0]
-        ylength = target[1] - x_start[1]
+        xlength = np.abs(target[0] - x_start[0])
+        ylength = np.abs(target[1] - x_start[1])
         self._s = xlength + ylength
         self._num_pimp = 0
         """number of times path has been improved"""
