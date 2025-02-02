@@ -6,8 +6,11 @@ from obstacle import obstacle_free
 # global parameters
 # don't change default values, assign them using
 # the function `set_parameters()`
-NU = 0.05
-"""As defined in reference [1] (in README)"""
+NU = 0.2
+"""
+As defined in reference [1] (in README), expect it is not used in the steer().
+Thus, it only sets a lower bound on the selection region of nearest node.
+"""
 
 DELTA_TARGET_REACHED = 0.2
 """Distance condition to meet to consider target has been attained from coordinates (x, y)"""
