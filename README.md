@@ -11,6 +11,7 @@ py main.py
 ```
 
 ## Implementation details
+### Cost function
 In [1], the cost function is defined such that `Cost(p) = Parent(p) + c(Line(Parent(p), p))`.
 Here, cost of a node `p` is merely the current distance traveled up until attained `p`.
 
