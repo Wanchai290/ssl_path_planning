@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from algs import rrt, informed_rrt
-from obstacle import add_obstacles, plot_obstacles, LineObstacle
+from obstacle import add_obstacles, plot_obstacles, LineObstacle, CircleObstacle
 
 if __name__ == '__main__':
     pmin, pmax = (-5., 5.)
@@ -14,7 +14,7 @@ if __name__ == '__main__':
     # load obstacles
     add_obstacles([
         LineObstacle((3.0, 3.4), (4.2, 1.0)),
-        LineObstacle((-0.4, 2.7), (3.7, 2.1)),
+        CircleObstacle((-1., 2), 1)
     ])
 
     # optional
@@ -32,8 +32,9 @@ if __name__ == '__main__':
     plot_obstacles()
 
     plt.title(f"Target attained : {target_attained}")
-    # plt.xlim([pmin, pmax])
-    # plt.ylim([pmin, pmax])
+    plt.xlim([pmin, pmax])
+    plt.ylim([pmin, pmax])
+    plt.gca().set_aspect('equal')
     plt.scatter(*start, c="b", zorder=1)
     plt.scatter(*target, c="red", zorder=1)
     plt.show()

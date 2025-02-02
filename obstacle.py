@@ -58,6 +58,23 @@ class LineObstacle(Obstacle):
         )
 
 
+class CircleObstacle(Obstacle):
+    def __init__(self, center: (float, float), radius: float):
+        self._c = center if type(center) is np.ndarray else np.array(center)
+        self._r = radius
+
+    def obstacle_free(self, l_start: np.ndarray, l_end: np.ndarray) -> bool:
+        # check l_end lies inside circle
+        # with the current use case, this is sufficient,
+        # because we search using a small step
+        return np.linalg.norm(l_end - self._c) < self._r
+
+    def plot(self):
+        ax = plt.gca()
+        c = plt.Circle(self._c, self._r)
+        ax.add_patch(c)
+
+
 # global
 __g_obstacles: [Obstacle] = []
 
