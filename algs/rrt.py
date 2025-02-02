@@ -3,20 +3,11 @@ import numpy as np
 from graph import Node, TreeGraph, CostTreeGraph
 from obstacle import obstacle_free
 
-"""
-References:
-[1] S.Karaman, E.Frazzoli, Sampling-based Algorithms for Optimal Motion Planning 
-https://arxiv.org/pdf/1105.1186
-
-[2] S.M. LaValle, Rapidly-Exploring Random Trees: A New Tool for Path Planning
-https://msl.cs.illinois.edu/~lavalle/papers/Lav98c.pdf
-"""
-
 # global parameters
 # don't change default values, assign them using
 # the function `set_parameters()`
 NU = 0.05
-"""As defined in reference [1] (see top of `rrt` module)"""
+"""As defined in reference [1] (in README)"""
 
 DELTA_TARGET_REACHED = 0.2
 """Distance condition to meet to consider target has been attained from coordinates (x, y)"""
@@ -63,7 +54,7 @@ def set_vec_norm(vec: np.ndarray, n: float):
 def steer(n_nearest: Node, x_rand: np.ndarray):
     """
     Not based on the definition of the `Steer() function` from [1]
-    (see references at the top of the file). Instead,
+    (see references in the readme.md). Instead,
     we use a step towards the next node, similar to [2],
     robots of the SSL are holonomic so this stepping should be valid
     in this use-case.

@@ -18,7 +18,7 @@ if __name__ == '__main__':
     ])
 
     # optional
-    rrt.set_parameters(step_norm=0.25, d_target_reached=0.25)
+    rrt.set_parameters(step_norm=0.15, d_target_reached=0.25)
 
     # g, target_attained = rrt.rrt_star(start, target, pmin, pmax, num_iters)
     g, target_attained = informed_rrt.informed_rrt_star(start, target, pmin, pmax, num_iters)

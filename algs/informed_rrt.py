@@ -62,6 +62,10 @@ def informed_rrt_star(
         target: np.ndarray,
         pmin: float, pmax: float,
         steps: int):
+    """
+    Informed RRT* implementation based on [2].
+    Search is limited to a square space as defined in [3]
+    """
     def r(num_nodes: int):
         """neighbour search radius"""
         return min(np.sqrt(np.log2(num_nodes) / num_nodes), NU)
